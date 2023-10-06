@@ -1,0 +1,45 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class RoundRobinWithoutArrivalTime {
+    public static void main(String[] args) {
+        int[] process = {0, 1, 2, 3}; // Process IDs
+        int[] burstTime = {8, 6, 4, 2}; // Burst times
+
+        int quantum = 2; // Time quantum
+
+        roundRobin(process, burstTime, quantum);
+    }
+
+    static void roundRobin(int[] process, int[] burstTime, int quantum) {
+        int n = process.length;
+        Queue<Integer> queue = new LinkedList<>();
+        int[] remainingTime = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            remainingTime[i] = burstTime[i];
+            queue.add(i);
+        }
+
+        int currentTime = 0;
+
+        System.out.println("Process\tRemaining Time");
+
+        while (!queue.isEmpty()) {
+            int currentProcess = queue.poll();
+            if (remainingTime[currentProcess] <= quantum) {
+                currentTime += remainingTime[currentProcess];
+                System.out.println("P" + currentProcess + "\t" + currentTime);
+                remainingTime[currentProcess] = 0;
+            } else {
+                currentTime += quantum;
+                remainingTime[currentProcess] -= quantum;
+                queue.add(currentProcess);
+            }
+
+            if (remainingTime[currentProcess] > 0) {
+                queue.add(currentProcess);
+            }
+        }
+    }
+}
